@@ -1,0 +1,27 @@
+# Node.js 
+node_modules/ 
+
+# Журнали журналів 
+*.log 
+npm-debug.log* 
+
+# Каталоги залежностей 
+pids 
+logs 
+*.pid 
+*.seed 
+*.pid.lock 
+
+# Додатковий каталог кешу npm 
+.npm 
+
+# Додатковий кеш eslint 
+.eslintcache 
+
+# Додатковий REPL історія 
+.node_repl_history 
+
+# Змінні середовища 
+.env*
+# Local Netlify folder
+.netlify
