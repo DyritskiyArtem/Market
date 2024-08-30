@@ -21,9 +21,11 @@ html
                 span
             nav.nav-menu
                 ul.nav-list
-                    li.nav-item My ads
-                    li.nav-item Announcement
-                    li.nav-item Message
+                    li.nav-item: a(href='/myAds') My ads
+                    li.nav-item: a(href='') Announcement
+                    li.nav-item: a(href='') Message
+                    li.nav-item: a(href='/register'): button.btn Register
+                    li.nav-item: a(href='/login'): button.btn Login
 
         .login-container       
             form.login-form(action="/login" method="POST" class=error ? 'error-login-form' : '')
@@ -38,13 +40,5 @@ html
                 div.login 
                     p You not have account?
                     a(href='/register') Register
-        script.
-            document.addEventListener('DOMContentLoaded', (event) => {
-                const burger = document.querySelector('.burger');
-                const navMenu = document.querySelector('.nav-menu');
-                
-                burger.addEventListener('click', () => {
-                    burger.classList.toggle('active');
-                    navMenu.classList.toggle('active');
-                });
-            });
+                    
+        script(src='./burger.js')

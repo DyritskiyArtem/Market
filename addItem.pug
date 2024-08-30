@@ -1,6 +1,6 @@
 html
     head 
-        title DAMarket
+        title Add item | DAMarket
 
         link(rel="stylesheet", href="./style.css")
         meta(name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no")
@@ -26,18 +26,23 @@ html
                     li.nav-item: a(href='') Message
                     li.nav-item: a(href='/register'): button.btn Register
                     li.nav-item: a(href='/login'): button.btn Login
-        
-        h2 Список користувачів: 
-        ul.userList
-            each user in users
-                li Ім'я: #{user.name}, Логін: #{user.login}
-        script.
-            document.addEventListener('DOMContentLoaded', (event) => {
-                const burger = document.querySelector('.burger');
-                const navMenu = document.querySelector('.nav-menu');
-                
-                burger.addEventListener('click', () => {
-                    burger.classList.toggle('active');
-                    navMenu.classList.toggle('active');
-                });
-            });
+
+        form.addItemForm(action="/addItem" method="POST" class=error ? 'errorAddItemForm' : '')
+            label Add a photo of the product
+            input(type="file")
+
+            label Title  
+            input(type="text" name="title")
+
+            label Description
+            textarea(name="description", cols="30", rows="10") 
+
+            label Price
+            input(type="text" name="price")
+
+            if error
+                p.error #{error}
+
+            button(type="submit") Add Item
+
+        script(src='./burger.js')  

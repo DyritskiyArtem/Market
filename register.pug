@@ -1,4 +1,3 @@
-doctype html
 html(lang="en")
     head 
         title Register | DAMarket
@@ -22,9 +21,11 @@ html(lang="en")
                 span
             nav.nav-menu
                 ul.nav-list
-                    li.nav-item My ads
-                    li.nav-item Announcement
-                    li.nav-item Message
+                    li.nav-item: a(href='/myAds') My ads
+                    li.nav-item: a(href='') Announcement
+                    li.nav-item: a(href='') Message
+                    li.nav-item: a(href='/register'): button.btn Register
+                    li.nav-item: a(href='/login'): button.btn Login
 
         div.container       
             form(action="/register" method="POST" class=error ? 'error-form' : '')
@@ -41,13 +42,4 @@ html(lang="en")
                     p You have account?
                     a(href='/login') Login
 
-        script.
-            document.addEventListener('DOMContentLoaded', (event) => {
-                const burger = document.querySelector('.burger');
-                const navMenu = document.querySelector('.nav-menu');
-                
-                burger.addEventListener('click', () => {
-                    burger.classList.toggle('active');
-                    navMenu.classList.toggle('active');
-                });
-            });
+        script(src='./burger.js')            

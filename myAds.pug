@@ -1,6 +1,6 @@
 html
     head 
-        title DAMarket
+        title My ads | DAMarket
 
         link(rel="stylesheet", href="./style.css")
         meta(name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no")
@@ -21,23 +21,13 @@ html
                 span
             nav.nav-menu
                 ul.nav-list
-                    li.nav-item: a(href='/myAds') My ads
+                    li.nav-item: a.active(href='') My ads
                     li.nav-item: a(href='') Announcement
                     li.nav-item: a(href='') Message
                     li.nav-item: a(href='/register'): button.btn Register
                     li.nav-item: a(href='/login'): button.btn Login
-        
-        h2 Список користувачів: 
-        ul.userList
-            each user in users
-                li Ім'я: #{user.name}, Логін: #{user.login}
-        script.
-            document.addEventListener('DOMContentLoaded', (event) => {
-                const burger = document.querySelector('.burger');
-                const navMenu = document.querySelector('.nav-menu');
-                
-                burger.addEventListener('click', () => {
-                    burger.classList.toggle('active');
-                    navMenu.classList.toggle('active');
-                });
-            });
+        .myAds
+            p You don't have your ads yet
+            a(href='/addItem') Create a new item
+
+    script(src='./burger.js')
