@@ -1,0 +1,24 @@
+html
+    include includes/head.pug
+    body
+        include includes/header.pug
+
+        form.addItemForm(action="/addItem" method="POST" class=error ? 'errorAddItemForm' : '')
+            label Add a photo of the product
+            input(type="file")
+
+            label Title  
+            input(type="text" name="title")
+
+            label Description
+            textarea(name="description", cols="30", rows="10") 
+
+            label Price
+            input(type="text" name="price")
+
+            if error
+                p.error #{error}
+
+            button(type="submit") Add Item
+
+        script(src='./burger.js')  

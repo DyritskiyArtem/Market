@@ -2,11 +2,11 @@ const express = require('express');
 const pug = require('pug');
 const fs = require('fs');
 
-const compiledFunction = pug.compileFile("userList.pug");
-const compiledFunctionRegister = pug.compileFile("register.pug");
-const compiledFunctionLogin = pug.compileFile("login.pug");
-const compiledFunctionMyAds = pug.compileFile("myAds.pug");
-const compiledFunctionAddItem= pug.compileFile("addItem.pug");
+const compiledFunction = pug.compileFile("pug/userList.pug");
+const compiledFunctionRegister = pug.compileFile("pug/register.pug");
+const compiledFunctionLogin = pug.compileFile("pug/login.pug");
+const compiledFunctionMyAds = pug.compileFile("pug/myAds.pug");
+const compiledFunctionAddItem= pug.compileFile("pug/addItem.pug");
 
 const app = express();
 const port = 1000;
@@ -16,15 +16,18 @@ let usersList = require("./usersList.json");
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.static("public"));
 
-app.get('/myAds', (req, res) => {
-    res.send(compiledFunctionMyAds({}));
+app.get('/myAds', (req: express.Request, res: express.Response) => {
+    res.send(compiledFunctionMyAds({
+        title: "My ads | DAMarket"
+    }));
 });
 
 app.get('/addItem', (req, res) => {
     let {error} = req.query
 
     res.send(compiledFunctionAddItem({
-        error
+        error,
+        title: "Add item | DAMarket"
     }));
 });
 
@@ -46,7 +49,8 @@ app.get('/register', (req, res) => {
     let {error} = req.query
 
     res.send(compiledFunctionRegister({
-        error
+        error,
+        title: "Register | DAMarket"
     }));
 });
 
@@ -54,7 +58,8 @@ app.get('/login', (req, res) => {
     let {error} = req.query
 
     res.send(compiledFunctionLogin({
-        error
+        error,
+        title: "Login | DAMarket"
     }));
 });
 
