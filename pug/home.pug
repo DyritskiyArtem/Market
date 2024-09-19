@@ -1,0 +1,15 @@
+html
+    include includes/head.pug
+    body
+        include includes/header.pug
+
+        .divItems
+
+            each item, index in itemList
+                .divItem
+                    .photo-container
+                        img.photo(src=item.photo alt="photoItem")
+                    p.title #{item.title}
+                    p.price #{item.price}
+                    p.descriptions #{item.descriptions}
+                    a.link(href=`item?id=${index}`) More information

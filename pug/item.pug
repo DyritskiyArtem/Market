@@ -1,0 +1,32 @@
+html
+    include includes/head.pug
+    body
+        include includes/header.pug
+
+        .container
+            .product-info
+                p.orderTitle #{item.title}
+                p.photo: img(src=item.photo alt="photoItem")
+                p.price #{item.price}
+                p.descriptions #{item.descriptions}
+                a.order-button(href='#' onclick='OrderForm()') Make an order
+
+            form.orderForm(id="orderForm" action="/submit-order" method="POST")
+                label(for="name") Name:
+                input.nameOrder(type="text" name="name" required)
+                
+                label(for="email") Email:
+                input.emeilOrder(type="email" name="email" required)
+                
+                label(for="phone") Phone number:
+                input.phoneOrder(type="tel" name="phone" required)
+                
+                label(for="address") Delivery address:
+                input.addressOrder(type='text' name="address" required)
+                
+                label(for="comments") Comments to the order:
+                textarea.addressOrder(name="comments")
+                
+                button.buttonOrder(type="submit") Make an order
+
+        script(src="./item.js") 

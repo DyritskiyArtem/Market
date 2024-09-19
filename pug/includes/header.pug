@@ -1,5 +1,5 @@
 header
-    img.logo(src="./DAMarket.png", alt="DAMarket")
+    a(href="/"): img.logo(src="./DAMarket.png", alt="DAMarket")
     .burger
         span
         span
@@ -11,3 +11,4 @@ header
             li.nav-item: a(href='') Message
             li.nav-item: a(href='/register'): button.btn Register
             li.nav-item: a(href='/login'): button.btn Login
+            li.nav-item #{login}

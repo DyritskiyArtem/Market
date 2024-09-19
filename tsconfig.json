@@ -10,5 +10,9 @@
     "allowJs": true,
     "outDir": "dist",
     "rootDir": "src"
-  }
+  },
+  "exclude": [
+    "public",
+    "node_modules"
+  ]
 }
