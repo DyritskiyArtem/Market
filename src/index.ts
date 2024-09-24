@@ -3,6 +3,9 @@ const multer = require('multer');
 const pug = require('pug');
 const path = require('path');
 const fs = require('fs');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+import { log } from "console";
 import{Request, Response} from "express";
 
 const compiledFunction = pug.compileFile("pug/home.pug");
@@ -14,6 +17,9 @@ const compiledFunctionItem= pug.compileFile("pug/item.pug");
 const app = express();
 const port = 1000;
 
+const JWT_SECRET = 'jufhyrY7e832u7uGJuer8326';
+const JWT_EXPIRY = '15m';
+
 let usersList = require("../usersList.json");
 
 interface Item {
@@ -23,9 +29,12 @@ interface Item {
     price: number,
 }
 
-let itemList: Item[] = require("../items.json")
+let itemList: Item[] = require("../items.json");
+console.log(itemList);
+
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.static("public"));
+app.use(cookieParser());
 
 // Налаштування сховища для завантажених файлів
 const storage = multer.diskStorage({
@@ -40,15 +49,23 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage });
 
 app.get('/', (req: Request, res: Response) => {
+    let {login} = req.cookies;
+
+    console.log(itemList);
+    
     res.send(compiledFunction({
         title: "DAMarket",
-        itemList
+        itemList,
+        login
     }));
 });
 
 app.get('/myAds', (req: Request, res: Response) => {
+    let {login} = req.cookies;
+
     res.send(compiledFunctionMyAds({
-        title: "My ads | DAMarket"
+        title: "My ads | DAMarket",
+        login
     }));
 });
 
@@ -58,13 +75,12 @@ app.get('/submit-order', (req: Request, res: Response) => {
 
 app.get('/addItem', (req: Request, res: Response) => {
     let {error} = req.query
-
-    // let {login} = req.cookies;
+    let {login} = req.cookies;
 
     res.send(compiledFunctionAddItem({
         error,
         title: "Add item | DAMarket",
-        // login
+        login
     }));
 });
 
@@ -95,6 +111,7 @@ app.post('/addItem',  upload.single("file"), (req: Request, res: Response) => {
 
 app.get('/item', (req: Request, res: Response) => {
     let {id} = req.query;
+    let {login} = req.cookies;
 
     if (id == undefined) {
         res.redirect("/");
@@ -104,23 +121,28 @@ app.get('/item', (req: Request, res: Response) => {
     res.send(compiledFunctionItem({
         title: "Item | DAMarket",
         item: itemList[+id],
+        login
     }));
 });
 
 app.get('/register', (req: Request, res: Response) => {
     let {error} = req.query;
+    let {login} = req.cookies;
 
     res.send(compiledFunctionRegister({
         error,
-        title: "Register | DAMarket"
+        login,
+        title: "Register | DAMarket",
     }));
 });
 
 app.get('/login', (req: Request, res: Response) => {
-    let {error} = req.query
+    let {error} = req.query;
+    let {login} = req.cookies;
 
     res.send(compiledFunctionLogin({
         error,
+        login,
         title: "Login | DAMarket"
     }));
 });
@@ -128,42 +150,42 @@ app.get('/login', (req: Request, res: Response) => {
 app.post('/register', (req: Request, res: Response) => {
     const { name, login, password } = req.body;
 
-    // if (name.length < 3 || name.length > 25) {
-    //     res.redirect('/register?error=Name must be between 3 and 25 characters');
-    //     return;
-    // }
+    if (name.length < 3 || name.length > 25) {
+        res.redirect('/register?error=Name must be between 3 and 25 characters');
+        return;
+    }
 
-    // if (password.length < 8 || password.length > 25) {
-    //     res.redirect('/register?error=Password must be between 8 and 25 characters');
-    //     return;
-    // }
+    if (password.length < 8 || password.length > 25) {
+        res.redirect('/register?error=Password must be between 8 and 25 characters');
+        return;
+    }
 
-    // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,25}$/;
-    // if (!passwordRegex.test(password)) {
-    //     res.redirect('/register?error=Password must contain at least one uppercase letter, one lowercase letter, and one digit')
-    //     return;
-    // }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,25}$/;
+    if (!passwordRegex.test(password)) {
+        res.redirect('/register?error=Password must contain at least one uppercase letter, one lowercase letter, and one digit')
+        return;
+    }
 
-    // for (let i = 0; i < usersList.length; i++) {
-    //     const user = usersList[i];
-    //     if (user.login === login) {
-    //         res.redirect('/register?error=This login already exists');
-    //         return;
-    //     }
-    // }
+    for (let i = 0; i < usersList.length; i++) {
+        const user = usersList[i];
+        if (user.login === login) {
+            res.redirect('/register?error=This login already exists');
+            return;
+        }
+    }
 
-    // if (login.length < 3 || login.length > 25) {
-    //     res.redirect('/register?error=Login must be between 3 and 25 characters')
-    //     return;
-    // }
+    if (login.length < 3 || login.length > 25) {
+        res.redirect('/register?error=Login must be between 3 and 25 characters')
+        return;
+    }
+
+    const token = jwt.sign({login}, JWT_SECRET, { expiresIn: JWT_EXPIRY });
 
     usersList.push({ name, login, password });
     let json = JSON.stringify(usersList);
     fs.writeFileSync("./usersList.json", json);
 
-    res
-        .cookie( "login", login, {path: "/", expires: new Date(10000000000000), sameSite: 'lax'}) // додати при відправки на GitHub httpOnly: true, secure: true
-        .cookie( "password", password, {path: "/", expires: new Date(10000000000000), sameSite: 'lax'}); // додати при відправки на GitHub httpOnly: true, secure: true
+    res.cookie( "token", token, {path: "/", expires: new Date(10000000000000), sameSite: 'lax',  httpOnly: true, secure: true}) // додати при відправки на GitHub
     res.redirect('/');
 });
 
@@ -188,6 +210,9 @@ app.post('/login', (req: Request, res: Response) => {
         return;
     }
 
+    const token = jwt.sign({login}, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+
+    res.cookie( "token", token, {path: "/", expires: new Date(10000000000000), sameSite: 'lax', httpOnly: true, secure: true}) // додати при відправки на GitHub httpOnly: true, secure: true
     res.send(compiledFunction({
         login: login,
         users: usersList,
