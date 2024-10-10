@@ -55,6 +55,15 @@ header li {
     border-radius: 15px;
 }
 
+.profilImgHe{
+    width: 32px;
+    transition: all ease .10s;
+    
+    &:hover{
+        transform: scale(110%);
+    }
+}
+
 .burger{
     display: none;
     cursor: pointer;
@@ -69,13 +78,12 @@ header li {
 }
 
 
-.divItems {
+.my-ads-container {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    gap: 10%;
-    margin: 5% 10%;
     justify-content: center;
+    gap: 30px;
+    padding: 40px 20px;
 }
 
 .divItem {
@@ -98,19 +106,26 @@ header li {
 }
 
 .photo-container {
-    width: 100%;
     height: 200px;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .photo {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: 10px;
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.divItem:hover .photo {
+    transform: scale(1.05);
+}
+
+.item-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .title {
@@ -132,21 +147,50 @@ header li {
 }
 
 .link {
-    display: block;
-    padding: 10px;
-    margin-bottom: 25px;
     background-color: #3498db;
     color: #fff;
-    text-align: center;
     text-decoration: none;
+    padding: 10px 15px;
     border-radius: 5px;
+    text-align: center;
     transition: background-color 0.3s ease;
-    margin-top: 15px;
+    font-weight: bold;
 }
 
 .link:hover {
     background-color: #2980b9;
 }
+
+.divPrice{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+}
+
+.currency{
+    font-weight: bold;
+    color: #3498db;
+    text-align: center;
+}
+
+.photo-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.photo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
 
 @media (max-width: 800px) {
     .divItems {
@@ -167,7 +211,7 @@ header li {
 }
   
 
-form {
+.form {
     background-color: #1A2B3C;
     padding: 30px;
     border-radius: 15px;
@@ -208,8 +252,11 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #2980b9;
+button:hover {background-color: #2980b9;}
+
+button:disabled{
+    background-color: #1c5479;
+    pointer-events: none;
 }
 
 .container,
@@ -308,31 +355,6 @@ button:hover {
 }
 
 
-.myAds{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    flex-direction: column;
-    font-size: 30px;
-}
-
-.myAds p{
-    color: #fff;
-}
-
-.myAds a{
-    color: #3b95d6;
-    font-weight: bold;
-    text-decoration: none;
-    transition: all .10s ease;
-
-    &:hover{
-        text-decoration: underline;
-    }
-}
-
-
 .addItemForm {
     display: flex;
     flex-direction: column;
@@ -418,13 +440,38 @@ button:hover {
     background-color: #2980b9;
 }
 
+.loginAddItem{
+    padding: 0 15px;
+    background-color: #34495e;
+    border-radius: 15px;
+    font-weight: bold;
+}
+
+.divInputPrice{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.divInputPrice select{
+    position: absolute;
+    font-size: 25px;
+    margin: 0.3% 23.6%;
+    border-radius: 5px;
+    background-color: #1a2b3b;
+    color: #fff;
+    border: none;
+}
 
 .orderForm{
     display: none;
 }
 
 .orderContainer {
-    max-width: 1200px;
+    display: flex;
+    flex-direction: row;
+    max-width: 1000px;
+    height: 70%;
     margin: 0 auto;
     margin-top: 3%;
     margin-bottom: 3%;
@@ -436,7 +483,7 @@ button:hover {
 
 .product-info {
     text-align: center;
-    margin-bottom: 20px;
+    margin: 15% 5%;
 }
 
 .product-info p {
@@ -447,6 +494,11 @@ button:hover {
     font-size: 40px;
     font-weight: bold;
     color: #333;
+}
+
+.photoItem{
+    margin-top: -4%;
+    margin-left: -5%;
 }
 
 .photo img {
@@ -465,6 +517,7 @@ button:hover {
 .descriptions {
     font-size: 20px;
     color: #777;
+    -webkit-line-clamp: 2;
 }
 
 .order-button {
@@ -481,20 +534,36 @@ button:hover {
     background-color: #14374e;
 }
 
+p.closed{
+    position: absolute;
+    filter: invert();
+    margin: 2px 81%;
+    cursor: pointer;
+}
+
+.closed img{
+    width: 20px;
+}
+
 .orderForm {
-    margin-top: -10%;
-    height: 100%;
-    padding: 20px;
-    background-color: #e6e5e5;
-    border: 2px solid #d2d2d2;
-    border-radius: 10px;
+    position: absolute;
+    width: 400px;
+    height: 547px;
+    margin: -20px 37%;
+    padding: 2px 30px;
+    background-color: #fff;
+    border-left: 1px solid #000;
+    border-radius: 15px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    color: #000;
 }
 
 .orderForm label {
     display: block;
     margin: 10px 0 5px;
     font-size: 14px;
-    color: #333;
+    color: #000;
     font-weight: bold;
 }
 
@@ -502,19 +571,23 @@ button:hover {
 .orderForm textarea {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    font-size: 15px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #c6c5c5;
+    color: #fff;
 }
 
 .orderForm textarea {
     height: 100px;
+    resize: vertical;
 }
 
 .buttonOrder {
     display: inline-block;
-    padding: 12px 25px;
+    width: 100%;
+    padding: 5px 15px;
     background-color: #235d85;
     color: #fff;
     border: none;
@@ -528,6 +601,24 @@ button:hover {
     background-color: #194460;
 }
 
+@media (max-width: 1000px) {
+    .orderContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-width: 800px;
+        height: 100%;
+    }
+
+    .photo {
+        margin: -10% 15%;
+        margin-bottom: -900px;
+    }
+
+    .product-info {
+        margin-top: 500px;
+    }
+}
 
 @media (max-width: 800px) {
     header{

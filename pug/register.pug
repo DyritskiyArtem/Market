@@ -1,9 +1,10 @@
 html(lang="en")
-    include includes/head.pug
+    head
+        include includes/head.pug
     body
         include includes/header.pug
         div.container
-            form(action="/register" method="POST" class=error ? 'error-form' : '')
+            form.form(action="/register" method="POST" class=error ? 'error-form' : '')
                 input(type="text" name="name" placeholder="Name" required)
                 input(type="text" name="login" placeholder="Login" required)
                 .password-container
@@ -20,4 +21,6 @@ html(lang="en")
                 div.login               
                     p You have account?
                     a(href='/login') Login
+                    
         script(src='/password.js')
+        script(src='/click.js')

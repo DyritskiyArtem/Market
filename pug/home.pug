@@ -1,14 +1,18 @@
 html
-    include includes/head.pug
+    head
+        include includes/head.pug
+        link(rel="stylesheet", href="./style/home.css")
     body
         include includes/header.pug
-        p #{JSON.stringify(itemList)}
         .divItems
-            //- each item, index in itemList
-            //-     .divItem
-            //-         .photo-container
-            //-             img.photo(src=item.photo alt="photoItem")
-            //-         p.title #{item.title}
-            //-         p.price #{item.price}
-            //-         p.descriptions #{item.descriptions}
-            //-         a.link(href=`item?id=${index}`) More information
+            each item, index in itemList
+                .divItem
+                    .photo-container
+                        img.photo(src=item.photo alt="photoItem")
+                    p.title #{item.title}
+                    .divPrice 
+                        p.price #{item.price}
+                        p.currency #{item.currency}
+                    p.descriptions #{item.descriptions}
+                    p.autor Author #{item.authorLogin}
+                    a.link(href=`item?id=${item.id}`) More information

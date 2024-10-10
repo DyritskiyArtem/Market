@@ -1,0 +1,5 @@
+{
+    "ignore": ["*.json"],
+    "ext": "js,pug",
+    "exec": "ts-node-dev src/index.ts"
+  }

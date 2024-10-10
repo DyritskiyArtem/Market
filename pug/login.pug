@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 html(lang="en")
-    include includes/head.pug
+    head
+        include includes/head.pug
     body
         include includes/header.pug
         .login-container       
-            form.login-form(action="/login" method="POST" class=error ? 'error-login-form' : '')
+            form.form.login-form(action="/login" method="POST" class=error ? 'error-login-form' : '')
                 input(type="text" name="login" placeholder="Your login" required)
                 .password-container
                     input(type="password" name="password" id="loginPassword" placeholder="Your password" required)
@@ -22,3 +23,4 @@ html(lang="en")
                     a(href='/register') Register
 
         script(src='/password.js')
+        script(src='/click.js')

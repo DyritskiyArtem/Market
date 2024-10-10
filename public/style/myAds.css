@@ -1,0 +1,208 @@
+.myAds {
+    text-align: center;
+    padding: 40px 0;
+    background-color: #2C3E50;
+}
+
+.myAds a {
+    display: inline-block;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.myAds a:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+.item-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.link, .edit-btn, .delete-btn {
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.link {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.link:hover {
+    background-color: #2980b9;
+}
+
+.edit-btn {
+    background-color: #f39c12;
+    color: #fff;
+}
+
+.edit-btn:hover {
+    background-color: #d35400;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+.delete-form {
+    margin: 0;
+}
+
+
+@media (max-width: 768px) {
+    .my-ads-container {
+        gap: 20px;
+    }
+
+    .divItem {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .divItem {
+        width: 100%;
+    }
+
+    .item-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .link, .edit-btn, .delete-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .myAds a {
+        padding: 12px 25px;
+        font-size: 16px;
+    }
+}
+
+
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px 0;
+}
+
+.editItemForm {
+    width: 70%;
+    background-color: #1A2B3C;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.editItemForm label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.editItemForm input[type="text"],
+.editItemForm input[type="number"],
+.editItemForm textarea,
+.editItemForm select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #34495e;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.editItemForm textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.current-photo {
+    max-width: 200px;
+    margin-bottom: 15px;
+}
+
+.current-photo img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.editItemForm input[type="file"] {
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.divPrice {
+    display: flex;
+    gap: 10px;
+}
+
+.divPrice input {
+    flex: 2;
+}
+
+.divPrice select {
+    flex: 1;
+}
+
+.error {
+    color: #e74c3c;
+    margin-top: 10px;
+}
+
+.editButton {
+    background-color: #3498db;
+    width: 100%;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .editItemForm {
+        padding: 20px;
+    }
+}

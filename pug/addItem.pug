@@ -1,9 +1,10 @@
 html
-    include includes/head.pug
+    head
+        include includes/head.pug
     body
         include includes/header.pug
 
-        form.addItemForm(action="/addItem" method="POST" enctype='multipart/form-data' class=error ? 'errorAddItemForm' : '')
+        form.form.addItemForm(action="/addItem" method="POST" enctype='multipart/form-data' class=error ? 'errorAddItemForm' : '')
             label Add a photo of the product
             input(type="file" name='file' accept="image/*")
 
@@ -14,7 +15,12 @@ html
             textarea(name="descriptions", cols="30", rows="10") 
 
             label Price
-            input(type="text" name="price")
+            .divInputPrice   
+                input(type="text" name="price")
+                select(name="currency") 
+                    each item, index in Object.keys(currencies)
+                        option(value=currencies[item]) #{currencies[item]}
+
 
             if error
                 p.error #{error}

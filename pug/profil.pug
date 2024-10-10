@@ -1,0 +1,14 @@
+html
+    head
+        include includes/head.pug
+        link(rel="stylesheet", href="./style/profil.css")
+    body
+        include includes/header.pug
+
+        .containerProfile2
+            .containerProfile
+                img.iconProfile(src="../userPhoto.png", alt="user")
+                h1.userLogin #{login}
+                h1 #{name}
+                p Password: #{password}
+            p.edit Edit

@@ -1,7 +1,26 @@
 html
-    include includes/head.pug
+    head
+        include includes/head.pug
+        link(rel="stylesheet", href="./style/myAds.css")
     body
         include includes/header.pug
+
+        .my-ads-container
+            each item, index in itemList
+                .divItem
+                    .photo-container
+                        img.photo(src=item.photo alt="photoItem")
+                    .item-content
+                        p.title #{item.title}
+                        .divPrice 
+                            p.price #{item.price}
+                            p.currency #{item.currency}
+                        p.descriptions #{item.descriptions}
+                        a.link(href=`item?id=${item.id}`) More information
+                        .item-actions
+                            a.edit-btn(href=`/editItem?id=${item.id}`) Edit
+                            form.delete-form(action=`/deleteItem?id=${item.id}` method="POST")
+                                button.delete-btn(type="submit") Delete
+
         .myAds
-            p You don't have your ads yet
             a(href='/addItem') Create a new item

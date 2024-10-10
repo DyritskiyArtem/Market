@@ -1,17 +1,24 @@
 html
-    include includes/head.pug
+    head
+        include includes/head.pug
     body
         include includes/header.pug
 
         .orderContainer
+            .photoItem
+                p.photo: img(src=item.photo alt="photoItem")
             .product-info
                 p.orderTitle #{item.title}
-                p.photo: img(src=item.photo alt="photoItem")
-                p.price #{item.price}
+                .divPrice 
+                    p.price #{item.price}
+                    p.currency #{item.currency}
                 p.descriptions #{item.descriptions}
+                p.author Author: #{item.authorLogin}
                 a.order-button(href='#' onclick='OrderForm()') Make an order
 
             form.orderForm(id="orderForm" action="/submit-order" method="POST")
+                p.closed#closed(onclick='Closed()'): img(src="./closed.png", alt="closed")
+
                 label(for="name") Name:
                 input.nameOrder(type="text" name="name" required)
                 
@@ -29,4 +36,6 @@ html
                 
                 button.buttonOrder(type="submit") Make an order
 
+
+            
         script(src="./item.js") 

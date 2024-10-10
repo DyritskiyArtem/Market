@@ -1,0 +1,35 @@
+html
+    head
+        include includes/head.pug
+        link(rel="stylesheet", href="./style/myAds.css")
+    body
+        include includes/header.pug
+
+    .container
+        form.editItemForm(action="/editItem" method="POST" enctype='multipart/form-data' class=error ? 'errorEditItemForm' : '')
+            input(type="hidden" name="id" value=item.id)
+
+            label Current photo
+            .current-photo
+                img(src=item.photo alt="Current item photo")
+            
+            label Change photo (optional)
+            input(type="file" name='file' accept="image/*")
+
+            label Title  
+            input(type="text" name="title" value=item.title required)
+
+            label Description
+            textarea(name="descriptions", cols="30", rows="10" required) #{item.descriptions}
+
+            label Price
+            .divPrice    
+                input(type="number" name="price" value=item.price required)
+                select(name="currency" value=item.currency) 
+                    each item, index in Object.keys(currencies)
+                        option(value=currencies[item]) #{currencies[item]}
+
+            if error
+                p.error #{error}
+
+            button.editButton(type="submit") Update Item

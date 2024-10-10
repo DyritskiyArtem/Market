@@ -1,0 +1,70 @@
+.costainerProfile2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 5%;
+}
+
+.containerProfile {
+    width: 18%;
+    margin: 5% 40%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: #1a2b3b;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.iconProfile {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.userLogin {
+    color: #fff;
+    font-weight: bold;
+    font-size: 24px;
+    margin-top: 20px;
+}
+
+h1:not(.userLogin) {
+    color: #666;
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.edit{
+    text-decoration: underline;
+    color: #fff;
+    margin: -3% 48%;
+    cursor: pointer;
+}
+
+p {
+    color: #999;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .iconProfile {
+        width: 150px;
+        height: 150px;
+    }
+
+    .userLogin {
+        font-size: 20px;
+    }
+
+    h1:not(.userLogin) {
+        font-size: 18px;
+    }
+}
