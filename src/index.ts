@@ -1,12 +1,15 @@
 const express = require('express');
-const multer = require('multer');
 const pug = require('pug');
-const path = require('path');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 import{Request, Response} from "express";
+
+const upload = require('./upload.ts');
+const {Currency, usersList, itemList, getUser} = require('./data.ts');
+
+import {Item, User} from "./data";
 
 const compiledFunction = pug.compileFile("pug/home.pug");
 const compiledFunctionRegister = pug.compileFile("pug/register.pug");
@@ -22,24 +25,6 @@ const port = 1000;
 const JWT_SECRET = 'jufhyrY7e832u7uGJuer8326';
 const JWT_EXPIRY = '30d';
 
-let usersList: User[] = require("../usersList.json");
-
-interface Item {
-    photo: string,
-    title: string,
-    descriptions: string,
-    price: number,
-    currency: Currency,
-    authorLogin: string,
-    id: string
-}
-
-interface User {
-    name: string,
-    login: string,
-    password: string,
-}
-
 declare global {
     namespace Express {
       interface Request {
@@ -48,41 +33,23 @@ declare global {
     }
 }
 
-enum Currency {
-    Dollar = "$",
-    Hryvnia = "₴",
-    Euro = "€",
-    Pound = "£"
-} 
-
-let itemList: Item[] = require("../items.json");
-console.log(itemList);
-
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.static("public"));
 app.use(cookieParser());
-
-// Налаштування сховища для завантажених файлів
-const storage = multer.diskStorage({
-    destination: (req: Request, file: Express.Multer.File, cb: any) => {
-      cb(null, "public/uploads");
-    },
-    filename: (req: Request, file: Express.Multer.File, cb: any) => {
-      cb(null, Date.now() + path.extname(file.originalname));
-    },
-  });
-  
-  const upload = multer({ storage: storage });
 
 // Middleware to verify token
 const verifyToken = (req: Request, res: Response, next: Function) => {
     const {token} = req.cookies;
     if (!token) return res.status(403).redirect('/login');
-  
+
     jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
-      if (err) return res.status(403).redirect('/login');
-      req.login = decoded.login;
-      next();
+        if (err) return res.status(403).redirect('/login');
+        
+        let user = getUser(decoded.login);
+        if (user == null) {return res.status(403).redirect('/login')}
+
+        req.login = decoded.login;
+        next();
     });
 };
 
@@ -105,14 +72,35 @@ const getLoginToken = (req: Request, res: Response, next: Function) => {
 };
 
 app.get('/', verifyToken, (req: Request, res: Response) => {
+    let { name, min, max } = req.query;
     let login = req.login;
 
-    console.log(itemList);
-    
+    let user = getUser(login!);
+
+    let filteredItems = itemList;
+
+    if (name) {
+        filteredItems = filteredItems.filter((item: Item) => 
+            item.authorLogin.includes((name as string))
+        );
+    }
+
+    if (min) {
+        filteredItems = filteredItems.filter((item: Item) => 
+            item.price >= parseFloat(min as string)
+        );
+    }
+
+    if (max) {
+        filteredItems = filteredItems.filter((item: Item) => 
+            item.price <= parseFloat(max as string)
+        );
+    }
+
     res.send(compiledFunction({
         title: "DAMarket",
-        itemList,
-        login,
+        itemList: filteredItems,
+        user,
         currencies: Currency
     }));
 });
@@ -120,30 +108,46 @@ app.get('/', verifyToken, (req: Request, res: Response) => {
 app.get('/profile', verifyToken, (req: Request, res: Response) => {
     let login = req.login;
 
-    let user = null;
-
-    for (let i = 0; i < usersList.length; i++) {
-        const u = usersList[i];
-        if (u.login == login) {
-            user = u;
-        }
-    }
+    let user = getUser(login!);
 
     res.send(compiledFunctionProfil({
         title: "Profile | DAMarket",
-        login,
-        name: user?.name,
-        password: user?.password
+        user,
     }));
+});
+
+app.post('/editProfile', verifyToken, upload.single("file"), (req: Request, res: Response) => {
+    const { name, password } = req.body;
+    const login = req.login;
+
+    let user = getUser(login!);
+    if (user == null) {return}
+        
+    if (login == user.login) {
+        user.name = name;
+        user.password = password;
+
+        if (req.file !== undefined) {
+            let photo = "uploads/" + req.file.filename;
+            user.photo = photo;
+        }
+
+        let json = JSON.stringify(usersList);
+        fs.writeFileSync("./usersList.json", json);
+
+        res.redirect('/profile');
+        return;
+    }
 });
 
 app.get('/myAds', verifyToken, (req: Request, res: Response) => {
     let login = req.login;
+    let user = getUser(login!);
 
     res.send(compiledFunctionMyAds({
         title: "My ads | DAMarket",
         itemList,
-        login,
+        user,
         currencies: Currency
     }));
 });
@@ -152,7 +156,7 @@ app.get('/editItem', verifyToken, (req: Request, res: Response) => {
     let {id, error} = req.query;
     let login = req.login;
 
-    
+    let user = getUser(login!);
 
     if (id == undefined) {
         res.redirect("/myAds");
@@ -184,6 +188,7 @@ app.get('/editItem', verifyToken, (req: Request, res: Response) => {
         title: "Edit Item | DAMarket",
         item,
         login,
+        user,
         currencies: Currency // Object.keys(Currency)
     }));
 });
@@ -281,10 +286,12 @@ app.get('/addItem', verifyToken, (req: Request, res: Response) => {
     let {error} = req.query;
     let login = req.login;
 
+    let user = getUser(login!);
+
     res.send(compiledFunctionAddItem({
         error,
         title: "Add item | DAMarket",
-        login,
+        user,
         currencies: Currency // Object.keys(Currency)
     }));
 });
@@ -321,6 +328,8 @@ app.get('/item', verifyToken, (req: Request, res: Response) => {
     let {id} = req.query;
     let login = req.login;
 
+    let user = getUser(login!);
+
     if (id == undefined) {
         res.redirect("/");
         return;
@@ -339,7 +348,7 @@ app.get('/item', verifyToken, (req: Request, res: Response) => {
     res.send(compiledFunctionItem({
         title: "Item | DAMarket",
         item,
-        login,
+        user,
         currencies: Currency,
     }));
 });
@@ -348,9 +357,11 @@ app.get('/register', getLoginToken, (req: Request, res: Response) => {
     let {error} = req.query;
     let login = req.login;
 
+    let user = getUser(login!);
+
     res.send(compiledFunctionRegister({
         error,
-        login,
+        user,
         title: "Register | DAMarket",
     }));
 });
@@ -359,9 +370,11 @@ app.get('/login', getLoginToken, (req: Request, res: Response) => {
     let {error} = req.query;
     let login = req.login;
 
+    let user = getUser(login!);
+
     res.send(compiledFunctionLogin({
         error,
-        login,
+        user,
         title: "Login | DAMarket"
     }));
 });
@@ -405,7 +418,7 @@ app.post('/register', (req: Request, res: Response) => {
 
     const token = jwt.sign({login}, JWT_SECRET, { expiresIn: JWT_EXPIRY });
 
-    usersList.push({ name, login, password });
+    usersList.push({ name, login, password, photo: null });
     let json = JSON.stringify(usersList);
     fs.writeFileSync("./usersList.json", json);
 

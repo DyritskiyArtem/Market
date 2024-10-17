@@ -1,14 +1,35 @@
-html
-    head
-        include includes/head.pug
-        link(rel="stylesheet", href="./style/profil.css")
-    body
-        include includes/header.pug
+html(lang="en")
+  head
+    include includes/head.pug
+    link(rel="stylesheet", href="./style/profil.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css")
+  body
+    include includes/header.pug
 
-        .containerProfile2
-            .containerProfile
-                img.iconProfile(src="../userPhoto.png", alt="user")
-                h1.userLogin #{login}
-                h1 #{name}
-                p Password: #{password}
-            p.edit Edit
+    main.containerProfile2
+      section.containerProfile
+        img.iconProfile#profileImage(src=(user.photo == null)? "../userPhoto.png": user.photo, alt=`${user.login}'s profile picture`)
+        h1.userLogin#userLogin #{user.login}
+        h2.userName#userName #{user.name}
+        .password-container
+          p.userPassword#userPassword Password: 
+            span#passwordText •••••••
+            span#password #{user.password}
+          i#togglePassword.fas.fa-eye-slash
+
+        button.editBtn#editButton(onclick='EditButton()') Edit Profile
+
+    #editModal.modal
+      .modal-content
+        span.close ×
+        h2 Edit Profile
+        form#editForm(action="/editProfile" method="POST" enctype='multipart/form-data')
+            label(for="editName") Name:
+            input#editName(type="text" name="name" required)
+            label(for="editPassword") New Password:
+            input#editPassword(type="password" name="password")
+            label(for="editImage") Profile Image:
+            input#editImage(type="file" name="file" accept="image/*")
+            button(type="submit") Save Changes
+
+    script(src="./password.js")

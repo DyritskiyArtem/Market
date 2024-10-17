@@ -4,15 +4,28 @@ html
         link(rel="stylesheet", href="./style/home.css")
     body
         include includes/header.pug
+        .filter
+            form(method="GET") 
+                label Author name 
+                input(type="text" name='name')
+
+                label Price
+                label Minumum
+                input(type="text", name="min")
+                label Maximum
+                input(type="text", name="max")
+
+                button(type="submit") Filter
         .divItems
             each item, index in itemList
+            
                 .divItem
                     .photo-container
                         img.photo(src=item.photo alt="photoItem")
                     p.title #{item.title}
+                    p.descriptions #{item.descriptions}
+                    p.autor Author #{item.authorLogin}
                     .divPrice 
                         p.price #{item.price}
                         p.currency #{item.currency}
-                    p.descriptions #{item.descriptions}
-                    p.autor Author #{item.authorLogin}
                     a.link(href=`item?id=${item.id}`) More information
