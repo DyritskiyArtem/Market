@@ -12,15 +12,15 @@ html
                         img.photo(src=item.photo alt="photoItem")
                     .item-content
                         p.title #{item.title}
+                        p.descriptions #{item.descriptions}
                         .divPrice 
                             p.price #{item.price}
                             p.currency #{item.currency}
-                        p.descriptions #{item.descriptions}
-                        a.link(href=`item?id=${item.id}`) More information
+                        a(href=`item?id=${item.id}`): button.link More information
                         .item-actions
-                            a.edit-btn(href=`/editItem?id=${item.id}`) Edit
+                            a(href=`/editItem?id=${item.id}`): button.edit-btn Edit
                             form.delete-form(action=`/deleteItem?id=${item.id}` method="POST")
-                                button.delete-btn(type="submit") Delete
+                                button.deleteBtn(type="submit") Delete
 
         .myAds
             a(href='/addItem') Create a new item

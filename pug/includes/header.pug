@@ -11,6 +11,6 @@ header
                 li.nav-item: a(href='/login'): button.btn Login
             else
                 li.nav-item: a(href='/myAds') My ads
-                li.nav-item: a(href='') Notification
+                li.nav-item: a(href="/notifications") Notifications
                 li.nav-item: a(href='/profile'): img.profilImgHe(src=(user.photo == null)? "../userPhoto.png": user.photo, alt="user")
                 li.nav-item: a(href='/logout'): button.btn Log Out

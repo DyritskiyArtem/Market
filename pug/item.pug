@@ -16,6 +16,7 @@ html(lang="en")
                     span.price #{item.price}
                     span.currency #{item.currency}
                 a.order-button(href='#' onclick='OrderForm()') Make an order
+                a.order-button(href=`/requestinfo?id=${item.id}`) Request data
 
             form.orderForm#orderForm(action="/submit-order" method="POST")
                 .closed#closed(onclick='Closed()'): img(src="./closed.png", alt="Close")

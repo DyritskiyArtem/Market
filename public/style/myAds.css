@@ -30,7 +30,8 @@
     margin-top: 15px;
 }
 
-.link, .edit-btn, .delete-btn {
+.link, .edit-btn, .deleteBtn {
+    width: 100%;
     padding: 8px 12px;
     border-radius: 5px;
     text-decoration: none;
@@ -57,51 +58,19 @@
     background-color: #d35400;
 }
 
-.delete-btn {
+.delete-form .deleteBtn {
     background-color: #e74c3c;
     color: #fff;
     border: none;
     cursor: pointer;
 }
 
-.delete-btn:hover {
+.delete-form .deleteBtn:hover {
     background-color: #c0392b;
 }
 
 .delete-form {
     margin: 0;
-}
-
-
-@media (max-width: 768px) {
-    .my-ads-container {
-        gap: 20px;
-    }
-
-    .divItem {
-        width: calc(50% - 20px);
-    }
-}
-
-@media (max-width: 480px) {
-    .divItem {
-        width: 100%;
-    }
-
-    .item-actions {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .link, .edit-btn, .delete-btn {
-        width: 100%;
-        text-align: center;
-    }
-
-    .myAds a {
-        padding: 12px 25px;
-        font-size: 16px;
-    }
 }
 
 
@@ -175,6 +144,12 @@
     flex: 1;
 }
 
+.descriptions{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .error {
     color: #e74c3c;
     margin-top: 10px;
@@ -204,5 +179,53 @@ button[type="submit"]:hover {
 
     .editItemForm {
         padding: 20px;
+    }
+
+    .my-ads-container {
+        gap: 20px;
+    }
+
+    .divItem {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .divItem {
+        width: 100%;
+    }
+
+    .item-actions {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .link{width: 100%;}
+
+    .edit-btn, .deleteBtn{
+        text-align: center;
+        width: 250px;
+    }
+
+    .myAds a {
+        padding: 12px 25px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .divItem {
+        width: calc(30% - 10px);
+    }
+
+    .link{
+        text-align: center;
+        width: 100%;}
+
+    .edit-btn, .deleteBtn{
+        text-align: center;
+        width: 200px;
     }
 }

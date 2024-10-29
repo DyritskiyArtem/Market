@@ -8,8 +8,6 @@ function togglePassword(inputId, icon) {
     }
 }
 
-
-
 const editButton = document.getElementById('editButton');
 const editModal = document.getElementById('editModal');
 const closeButton = document.querySelector('.close');

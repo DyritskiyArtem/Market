@@ -13,6 +13,13 @@ export interface User {
     login: string,
     password: string,
     photo: string | null,
+    notifications: Notification[],
+}
+
+export interface Notification {
+    text: string,
+    time: Date,
+    see: boolean
 }
 
 enum Currency {

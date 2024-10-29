@@ -1,0 +1,18 @@
+html(lang="en")
+  head
+    include includes/head.pug
+    link(rel="stylesheet", href="/style/notifications.css")
+  body
+    include includes/header.pug
+    
+    .notificationsContainer
+      if user.notifications.length > 0
+        each notification in user.notifications
+          .notificationCard
+            .notificationStatus(class=notification.see ? 'notificationSeen' : 'notificationNew')
+            .notificationContent
+              .notificationText #{notification.text}
+            .notificationTime #{new Date(notification.time).toLocaleString()}
+      else
+        .noNotifications
+          p You don't have any notifications yet.

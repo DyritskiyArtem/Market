@@ -21,15 +21,16 @@ html(lang="en")
 
     #editModal.modal
       .modal-content
-        span.close ×
-        h2 Edit Profile
-        form#editForm(action="/editProfile" method="POST" enctype='multipart/form-data')
-            label(for="editName") Name:
-            input#editName(type="text" name="name" required)
-            label(for="editPassword") New Password:
-            input#editPassword(type="password" name="password")
-            label(for="editImage") Profile Image:
-            input#editImage(type="file" name="file" accept="image/*")
-            button(type="submit") Save Changes
+        .titleProfile
+          p Edit Profile
+          span.close ×
+      form#editForm(action="/editProfile" method="POST" enctype='multipart/form-data')
+          label(for="editName") Name:
+          input#editName(type="text" name="name" required)
+          label(for="editPassword") New Password:
+          input#editPassword(type="password" name="password")
+          label(for="editImage") Profile Image:
+          input#editImage(type="file" name="file" accept="image/*")
+          button(type="submit") Save Changes
 
     script(src="./password.js")

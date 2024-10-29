@@ -1,0 +1,52 @@
+.notificationsContainer{
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  
+.notificationCard{
+    background: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+  
+.notificationContent {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 3%;
+}
+  
+.notificationText {
+    font-size: 1rem;
+    color: #333;
+}
+  
+.notificationTime {
+    font-size: 0.875rem;
+    color: #666;
+}
+  
+.notificationStatus {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+  
+.notificationNew {
+    background-color: #4CAF50;
+}
+  
+.notificationSeen {
+    background-color: #9e9e9e;
+}
+  
+.noNotifications {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+}

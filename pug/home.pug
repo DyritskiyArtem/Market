@@ -4,15 +4,16 @@ html
         link(rel="stylesheet", href="./style/home.css")
     body
         include includes/header.pug
-        .filter
+        p.btnFilter#btnilter(onclick='Filter()') Filter
+        .filter#divFilter
             form(method="GET") 
+                .closed#closed(onclick='Closed()'): img(src="./closed.png", alt="Close")
                 label Author name 
                 input(type="text" name='name')
 
-                label Price
-                label Minumum
+                label Minumum price
                 input(type="text", name="min")
-                label Maximum
+                label Maximum price
                 input(type="text", name="max")
 
                 button(type="submit") Filter
@@ -29,3 +30,4 @@ html
                         p.price #{item.price}
                         p.currency #{item.currency}
                     a.link(href=`item?id=${item.id}`) More information
+        script(src="./home.js") 
