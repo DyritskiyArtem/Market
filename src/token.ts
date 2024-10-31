@@ -1,6 +1,6 @@
 import{Request, Response} from "express";
 const jwt = require('jsonwebtoken');
-const {getUser} = require('./data.ts');
+const {getUser} = require('./data');
 
 const JWT_SECRET = 'jufhyrY7e832u7uGJuer8326';
 const JWT_EXPIRY = '30d';
