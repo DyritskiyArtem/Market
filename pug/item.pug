@@ -18,7 +18,7 @@ html(lang="en")
                 a.order-button(href='#' onclick='OrderForm()') Make an order
                 a.order-button(href=`/requestinfo?id=${item.id}`) Request data
 
-            form.orderForm#orderForm(action="/submit-order" method="POST")
+            form.orderForm#orderForm(action=`/orderitem?id=${item.id}` method="POST")
                 .closed#closed(onclick='Closed()'): img(src="./closed.png", alt="Close")
 
                 label(for="name") Name:
@@ -34,8 +34,8 @@ html(lang="en")
                 input.addressOrder#address(type='text' name="address" required)
                 
                 label(for="comments") Comments to the order:
-                textarea.commentsOrder#comments(name="comments")
+                input.commentsOrder#comments(name="comments")
                 
-                button.buttonOrder(type="submit") Make an order
+                a(href='/orderitem'): button.buttonOrder(type="submit") Make an order
 
         script(src="./item.js")

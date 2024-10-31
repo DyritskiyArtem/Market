@@ -96,17 +96,19 @@ div.closed{
 }
 
 .orderForm {
-    position: absolute;
-    width: 100%;
-    height: auto;
-    /* margin: -40% 37%; */
-    padding: 0 30px;
+    display: none;
+    position: fixed;
+    top: 51.1%;
+    left: 77.7%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 68.6%;
+    max-width: 285px; /* 500px */
     background-color: #fff;
-    border-left: 1px solid #000;
-    border-radius: 15px;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-    color: #000;
+    padding: 5px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }
 
 .orderForm label {
@@ -175,5 +177,11 @@ div.closed{
 
     .order-button{
         margin-right: 3%;
+    }
+}
+
+@media (max-width: 1000px) {
+    .orderContainer{
+        max-width: 80%;
     }
 }

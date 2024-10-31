@@ -6,7 +6,7 @@ html
         include includes/header.pug
 
         .my-ads-container
-            each item, index in itemList
+            each item, index in itemList.filter(item => item.authorLogin == user.login)
                 .divItem
                     .photo-container
                         img.photo(src=item.photo alt="photoItem")

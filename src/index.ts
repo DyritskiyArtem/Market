@@ -1,6 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const makeRouter = require('./router.ts');
+const makeRouter = require('./router');
 
 const app = express();
 const port = 1000;

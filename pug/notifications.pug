@@ -4,14 +4,17 @@ html(lang="en")
     link(rel="stylesheet", href="/style/notifications.css")
   body
     include includes/header.pug
+
     
     .notificationsContainer
       if user.notifications.length > 0
-        each notification in user.notifications
+        .divClear: a(href="/clearn").clearN Clear
+
+        each notification in user.notifications.sort((a, b) => {return new Date(b.time).getTime() - new Date(a.time).getTime();})
           .notificationCard
             .notificationStatus(class=notification.see ? 'notificationSeen' : 'notificationNew')
             .notificationContent
-              .notificationText #{notification.text}
+              .notificationText !{notification.text}
             .notificationTime #{new Date(notification.time).toLocaleString()}
       else
         .noNotifications

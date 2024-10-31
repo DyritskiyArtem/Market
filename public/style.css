@@ -45,20 +45,15 @@ header li {
     color: #3498db;
 }
 
-.notificationStatus {
+.nDiv {
+    position: absolute;
+    margin: 10.6%;
+    margin-bottom: 9.7%;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    margin-left: 1rem;
-  }
-  
-  .notificationNew {
     background-color: #4CAF50;
-  }
-  
-  .notificationSeen {
-    background-color: #9e9e9e;
-  }
+}
 
 .logo{
     width: 130px;
@@ -124,17 +119,6 @@ header li {
     margin-top: 10%;
     overflow: hidden;
     border-radius: 10px;
-}
-
-.photo {
-    width: 90%;
-    height: 90%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.divItem:hover .photo {
-    transform: scale(1.05);
 }
 
 .item-content {

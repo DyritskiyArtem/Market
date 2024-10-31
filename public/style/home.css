@@ -67,15 +67,14 @@
 }
 
 .closed img{
+    margin-top: 10%;
     cursor: pointer;
     display: block;
     width: 20px;
     margin-left: auto;
+    overflow: hidden;
 }
 
-
-.photo-container {
-}
 
 .photo {
     width: 250px;

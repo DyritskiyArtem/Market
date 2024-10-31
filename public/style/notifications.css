@@ -1,3 +1,10 @@
+a{
+    font-weight: bold;
+    color: #2d3e50;
+}
+
+span{font-weight: bold;}
+
 .notificationsContainer{
     max-width: 800px;
     margin: 2rem auto;
@@ -13,6 +20,30 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.divClear{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.clearN {
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    background-color: #1a2b3b;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    margin: 20px;
+    font-size: 20px;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.clearN:hover{background-color: #182735;}
   
 .notificationContent {
     flex-grow: 1;
@@ -47,6 +78,6 @@
   
 .noNotifications {
     text-align: center;
-    color: #666;
-    padding: 2rem;
+    color: #fff;
+    font-size: 20px;
 }

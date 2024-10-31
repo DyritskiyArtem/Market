@@ -2,9 +2,9 @@ import {Express} from "express";
 import {Item, User, Notification} from "./data";
 import{Request, Response} from "express";
 import { userInfo } from "os";
-const {Currency, usersList, itemList, getUser} = require('./data.ts');
-const {createToken, verifyToken, getLoginToken} = require('./token.ts');
-const upload = require('./upload.ts');
+const {Currency, usersList, itemList, getUser} = require('./data');
+const {createToken, verifyToken, getLoginToken} = require('./token');
+const upload = require('./upload');
 const pug = require('pug');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
@@ -310,14 +310,70 @@ module.exports = function makeRouter(app: Express) {
         }));
     });
 
+    app.post('/orderitem', verifyToken, (req: Request, res: Response) => {
+        let { id } = req.query;
+        let buyerLogin = req.login;
+        
+        // if (id == undefined) {
+        //     res.redirect("/");
+        //     return;
+        // }
+    
+        let item = null;
+        for (let i = 0; i < itemList.length; i++) {
+            const item2 = itemList[i];
+            if (item2.id == id) {
+                item = item2;
+                break;
+            }
+        }
+    
+        let buyer = getUser(buyerLogin!);
+        let seller = getUser(item.authorLogin);
+
+
+    
+        // if (buyerLogin === item.authorLogin) {
+        //     res.redirect("/");
+        //     return;
+        // }
+    
+        const sellerNotification: Notification = {text: `User ${buyerLogin} wants to buy your item "${item.title}" for ${item.price} ${item.currency}. Contact them to complete the transaction.`, time: new Date(), see: false};
+        const buyerNotification: Notification = {text: `You've ordered "${item.title}" for ${item.price} ${item.currency} from ${item.authorLogin}. Wait for the seller to contact you.`, time: new Date(), see: false};
+    
+        seller.notifications.push(sellerNotification);
+        buyer.notifications.push(buyerNotification);
+    
+        let json = JSON.stringify(usersList);
+        fs.writeFileSync("./usersList.json", json);
+    
+        res.redirect("/notifications");
+    });
+
     app.get('/notifications', verifyToken, (req: Request, res: Response) => {
         let login = req.login;    
         let user = getUser(login!);
-    
+
         res.send(compiledFunctionNotifications({
             title: "Notifications | DAMarket",
-            user,
+            user, 
         }));
+
+        let update: boolean = false;
+        for (let i = 0; i < user.notifications.length; i++) {
+            const notification = user.notifications[i];
+
+            if (notification.see === false) {
+                update = true;
+            }
+
+            notification.see = true;
+        }
+
+        if (update === true) {
+            let json = JSON.stringify(usersList);
+            fs.writeFileSync("./usersList.json", json);
+        }
     });
 
     app.get('/requestinfo', verifyToken, (req: Request, res: Response) => {
@@ -342,13 +398,42 @@ module.exports = function makeRouter(app: Express) {
         let authorLogin = item.authorLogin;
         let author = getUser(authorLogin);
 
-        const notification: Notification = {text: 'Вітаю в DAMarket!', time: new Date(), see: true};
+        const notification: Notification = {text: `User <span>${login}</span> requested your data. Click <a href='/sendinfo?sendLogin=${login}'> here</a> to send them`, time: new Date(), see: false};
         author.notifications.push(notification);
 
         let json = JSON.stringify(usersList);
         fs.writeFileSync("./usersList.json", json);
 
-        res.redirect("/myAds");
+        res.redirect("/");
+    });
+
+    app.get('/sendinfo', verifyToken, (req: Request, res: Response) => { 
+        let login = req.login;
+        let user = getUser(login!);
+        let {sendLogin} = req.query;
+        let sendUser = getUser(sendLogin!);
+
+        const notification: Notification = {text: `You have received the data you requested: ${login}, ${user.name}`, time: new Date(), see: false};
+        sendUser.notifications.push(notification);
+
+        let json = JSON.stringify(usersList);
+        fs.writeFileSync("./usersList.json", json);
+
+        res.redirect("/");
+    });
+
+    app.get('/clearn', verifyToken, (req: Request, res: Response) => { 
+        let login = req.login;
+        let user = getUser(login!);
+        
+        if (user) {
+            user.notifications = [];
+            
+            let json = JSON.stringify(usersList);
+            fs.writeFileSync("./usersList.json", json);
+        }
+    
+        res.redirect("/notifications");
     });
     
     app.get('/register', getLoginToken, (req: Request, res: Response) => {
@@ -384,6 +469,9 @@ module.exports = function makeRouter(app: Express) {
     
     app.post('/register', (req: Request, res: Response) => {
         const { name, login, password } = req.body;
+        let user = getUser(login!);
+        let {sendLogin} = req.query;
+        let sendUser = getUser(sendLogin!);
     
         if (name.length < 3 || name.length > 25) {
             res.redirect('/register?error=Name must be between 3 and 25 characters');
@@ -415,11 +503,13 @@ module.exports = function makeRouter(app: Express) {
         }
     
         const token = createToken(login);
+
+        const welcomeNotification: Notification = {text: "Welcome to DAMarket! Sell your products and reach buyers easily. Start now!", time: new Date(), see: false};
     
-        usersList.push({ name, login, password, photo: null, notifications: [] });
+        usersList.push({ name, login, password, photo: null, notifications: [welcomeNotification] });
         let json = JSON.stringify(usersList);
         fs.writeFileSync("./usersList.json", json);
-    
+
         res.cookie( "token", token, {path: "/", expires: new Date(10000000000000), sameSite: 'lax',  httpOnly: true, secure: true}) // додати при відправки на GitHub
         res.redirect('/');
     });
