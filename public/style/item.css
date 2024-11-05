@@ -2,7 +2,10 @@
     display: none;
 }
 
+.contentOrder{z-index: 1;}
+
 .orderContainer {
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -10,12 +13,17 @@
     max-width: 70%;
     height: 70%;
     margin: 0 auto;
-    margin-top: 3%;
+    margin-top: 5%;
     margin-bottom: 3%;
     padding: 0 50px;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 20px;
+    z-index: 1;
+}
+
+.orderContainer.active{
+    z-index: -1;
 }
 
 .photoItem{
@@ -43,7 +51,7 @@
 
 .product-info {
     text-align: center;
-    width: 50%;
+    width: 60%;
 }
 
 .product-info p {
@@ -73,6 +81,7 @@
     display: inline-block;
     padding: 10px 20px;
     margin-bottom: 3%;
+    margin-right: 3%;
     background-color: #235d85;
     color: #fff;
     text-decoration: none;
@@ -87,28 +96,23 @@
 div.closed{
     position: absolute;
     filter: invert();
-    margin: 2px 81%;
+    margin: 8px 93%;
     cursor: pointer;
 }
 
 .closed img{
-    width: 20px;
+    width: 17px;
 }
 
 .orderForm {
-    display: none;
-    position: fixed;
-    top: 51.1%;
-    left: 77.7%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 68.6%;
-    max-width: 285px; /* 500px */
+    position: absolute;
+    width: 100%;
+    height: auto;
+    /* margin: -40% 37%; */
+    padding: 0 30px;
     background-color: #fff;
-    padding: 5px 20px;
     border-radius: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    color: #000;
 }
 
 .orderForm label {
@@ -127,8 +131,8 @@ div.closed{
     border: none;
     border-radius: 8px;
     font-size: 16px;
-    background-color: #c6c5c5;
-    color: #fff;
+    background-color: #dfdfdf;
+    color: #000;
 }
 
 .orderForm textarea {
@@ -140,6 +144,8 @@ div.closed{
     display: inline-block;
     width: 100%;
     padding: 5px 15px;
+    margin-bottom: 1%;
+    margin-top: 1%;
     background-color: #235d85;
     color: #fff;
     border: none;
@@ -154,12 +160,29 @@ div.closed{
 }
 
 
-@media (max-width: 1000px) {
+@media (max-width: 1280px) {
+    .orderContainer{height: 55%; margin-top: 10%;}
+    .orderForm{width: 95%;}
+
+    .product-info{width: 110%; margin-left: -7%;}
+    .photo {width: 85%;}
+    .order-button{margin-right: 3%;}
+}
+
+@media (max-width: 1060px) {
     .orderContainer {
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
         height: auto;
         padding: 20px;
+        margin-top: 10%
     }
+
+    .product-info{
+        width: 110%;
+        margin-left: 0%;
+}
 
     .photoItem {
         width: 100%;
@@ -167,6 +190,7 @@ div.closed{
     }
 
     .photo {
+        width: 100%;
         max-height: 400px;
         margin-left: 0;
     }
@@ -174,10 +198,26 @@ div.closed{
     .product-info {
         width: 100%;
     }
-
-    .order-button{
-        margin-right: 3%;
+    
+    .orderForm {
+        position: absolute;
+        bottom: 0%;
+        width: 90%;
+        height: 90%;
+        /* margin: 20px 0 0; */
+        padding: 20px;
+        border-radius: 20px;
     }
+
+    div.closed{
+        margin: 2px 81%;
+    }
+    
+    .closed img{
+        width: 20px;
+    }
+
+    .order-button{margin-right: 3%;}
 }
 
 @media (max-width: 1000px) {

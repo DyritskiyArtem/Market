@@ -11,7 +11,7 @@ html(lang="en")
         img.iconProfile#profileImage(src=(user.photo == null)? "../userPhoto.png": user.photo, alt=`${user.login}'s profile picture`)
         h1.userLogin#userLogin #{user.login}
         h2.userName#userName #{user.name}
-        .password-container
+        .password-container#password-container
           p.userPassword#userPassword Password:
             span#passwordText •••••••
             span#password #{user.password}
@@ -24,13 +24,13 @@ html(lang="en")
         .titleProfile
           p Edit Profile
           span.close ×
-      form#editForm(action="/editProfile" method="POST" enctype='multipart/form-data')
-          label(for="editName") Name:
-          input#editName(type="text" name="name" required)
-          label(for="editPassword") New Password:
-          input#editPassword(type="password" name="password")
-          label(for="editImage") Profile Image:
-          input#editImage(type="file" name="file" accept="image/*")
-          button(type="submit") Save Changes
+        form#editForm(action="/editProfile" method="POST" enctype='multipart/form-data')
+            label(for="editName") Name:
+            input#editName(type="text" name="name" required)
+            label(for="editPassword") New Password:
+            input#editPassword(type="password" name="password")
+            label(for="editImage") Profile Image:
+            input#editImage(type="file" name="file" accept="image/*")
+            button(type="submit") Save Changes
 
-    script(src="./password.js")
+    script(src="/js/password.js")

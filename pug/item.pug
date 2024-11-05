@@ -5,7 +5,7 @@ html(lang="en")
     body
         include includes/header.pug
 
-        .orderContainer
+        .orderContainer#orderContainer
             .photoItem
                 .photo: img(src=item.photo alt="Product Image")
             .product-info
@@ -34,8 +34,8 @@ html(lang="en")
                 input.addressOrder#address(type='text' name="address" required)
                 
                 label(for="comments") Comments to the order:
-                input.commentsOrder#comments(name="comments")
+                textarea.commentsOrder#comments(name="comments")
                 
                 a(href='/orderitem'): button.buttonOrder(type="submit") Make an order
 
-        script(src="./item.js")
+        script(src="/js/item.js")

@@ -1,10 +1,10 @@
-.myAds {
+.newItem {
     text-align: center;
-    padding: 40px 0;
+    padding: 20px 0;
     background-color: #2C3E50;
 }
 
-.myAds a {
+.newItem a {
     display: inline-block;
     background-color: #3498db;
     color: #fff;
@@ -17,7 +17,7 @@
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.myAds a:hover {
+.newItem a:hover {
     background-color: #2980b9;
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(0,0,0,0.15);
@@ -209,7 +209,7 @@ button[type="submit"]:hover {
         width: 250px;
     }
 
-    .myAds a {
+    .newItem a {
         padding: 12px 25px;
         font-size: 16px;
     }

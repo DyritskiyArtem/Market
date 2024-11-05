@@ -5,6 +5,9 @@ html
     body
         include includes/header.pug
 
+        .newItem
+            a(href='/addItem') Create a new item
+
         .my-ads-container
             each item, index in itemList.filter(item => item.authorLogin == user.login)
                 .divItem
@@ -21,6 +24,3 @@ html
                             a(href=`/editItem?id=${item.id}`): button.edit-btn Edit
                             form.delete-form(action=`/deleteItem?id=${item.id}` method="POST")
                                 button.deleteBtn(type="submit") Delete
-
-        .myAds
-            a(href='/addItem') Create a new item

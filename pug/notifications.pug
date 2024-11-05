@@ -12,7 +12,8 @@ html(lang="en")
 
         each notification in user.notifications.sort((a, b) => {return new Date(b.time).getTime() - new Date(a.time).getTime();})
           .notificationCard
-            .notificationStatus(class=notification.see ? 'notificationSeen' : 'notificationNew')
+            .divStatus
+              .notificationStatus(class=notification.see ? 'notificationSeen' : 'notificationNew')
             .notificationContent
               .notificationText !{notification.text}
             .notificationTime #{new Date(notification.time).toLocaleString()}

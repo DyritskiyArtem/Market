@@ -2,6 +2,7 @@
 html(lang="en")
     head
         include includes/head.pug
+        link(rel="stylesheet", href="./style/login.css")
     body
         include includes/header.pug
         .login-container       
@@ -22,5 +23,5 @@ html(lang="en")
                     p You not have account?
                     a(href='/register') Register
 
-        script(src='/password.js')
-        script(src='/click.js')
+        script(src='/js/password.js')
+        script(src='/js/click.js')

@@ -22,7 +22,7 @@
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid #fff;
+    border: 2px solid #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
@@ -66,7 +66,10 @@ p {
 .password-container {
     position: relative;
     display: inline-block;
+    z-index: 1;
 }
+
+.password-container.active{z-index: -1;}
 
 #password{display: none;}
 
@@ -95,6 +98,7 @@ p {
 .modal {
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     padding: 44px 0;
 
     display: none;
@@ -142,10 +146,11 @@ p {
 
 .close {
     position: relative;
-    left: 60%;
+    left: 75%;
+    top: -50%;
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 40px;
     font-weight: bold;
 }
 
@@ -218,6 +223,17 @@ p {
 }
 
 /* Responsive styles */
+@media (max-width: 800px) {
+    .modal{
+        padding: 20px 0;
+    }
+
+    .modal-content {
+        width: 80%;
+    }
+}
+
+
 @media (max-width: 600px) {
     .containerProfile {
         padding: 20px;
@@ -232,6 +248,13 @@ p {
     }
 }
 
+@media (max-width: 470px) {
+    .close {
+        left: 60%;
+        top: -50%;
+    }
+}
+
 @media (max-width: 450px) {
     .containerProfile{width: 80%;}
 }
@@ -239,5 +262,10 @@ p {
 @media (max-width: 400px) {
     .containerProfile {
         padding: 15px;
+    }
+    
+    .close {
+        left: 50%;
+        top: -50%;
     }
 }

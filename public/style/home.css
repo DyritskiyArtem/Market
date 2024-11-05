@@ -133,6 +133,11 @@
         height: 170px;
     }
 
+    .photo {
+        width: 700px;
+        height: 400px;
+    }
+
     .divItem {
         width: 80%;
         max-width: 300px;
