@@ -1,7 +1,7 @@
 header
     a(href="/"): img.logo(src="./DAMarket.png", alt="DAMarket")
     .burger
-        if user.notifications.filter(n => n.see === false).length > 0
+        if user !== null && user.notifications.filter(n => n.see === false).length > 0
             .nDivMedia
         span
         span
