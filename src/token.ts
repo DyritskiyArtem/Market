@@ -2,7 +2,7 @@ import{Request, Response} from "express";
 const jwt = require('jsonwebtoken');
 const {getUser} = require('./data');
 
-const JWT_SECRET = 'jufhyrY7e832u7uGJuer8326';
+const JWT_SECRET = process.env.TOKEN_SECRET;
 const JWT_EXPIRY = '30d';
 
 function createToken(login: string): string {
@@ -12,14 +12,14 @@ function createToken(login: string): string {
 }
 
 // Middleware to verify token
-const verifyToken = (req: Request, res: Response, next: Function) => {
+const verifyToken = async (req: Request, res: Response, next: Function) => {
     const {token} = req.cookies;
     if (!token) return res.status(403).redirect('/login');
 
-    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+    jwt.verify(token, JWT_SECRET, async (err: any, decoded: any) => {
         if (err) return res.status(403).redirect('/login');
         
-        let user = getUser(decoded.login);
+        let user = await getUser(decoded.login);
         if (user == null) {return res.status(403).redirect('/login')}
 
         req.login = decoded.login;
@@ -27,14 +27,15 @@ const verifyToken = (req: Request, res: Response, next: Function) => {
     });
 };
 
-const getLoginToken = (req: Request, res: Response, next: Function) => {
+const getLoginToken = async (req: Request, res: Response, next: Function) => {
     const {token} = req.cookies;
     if (!token){
         req.login = null;
         next();
+        return;
     }
 
-    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+    jwt.verify(token, JWT_SECRET, async (err: any, decoded: any) => {
     if (err) {
         req.login = null;
         next();

@@ -58,9 +58,8 @@ header li {
 }
 
 .nDiv {
-    position: absolute;
-    margin: 10.6%;
-    margin-bottom: 11%;
+    position: relative;
+    
     width: 10px;
     height: 10px;
     border-radius: 50%;

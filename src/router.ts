@@ -1,8 +1,7 @@
 import {Express} from "express";
 import {Item, User, Notification} from "./data";
 import{Request, Response} from "express";
-import { userInfo } from "os";
-const {Currency, usersList, itemList, getUser} = require('./data');
+const {Currency, getUser, getItem, getUsers, getItems, addUser, cheksPassword, editUser, addItem, removeItem, editItem, addNotificationToUser, clearNotifications, seeNotificationsForUser} = require('./data');
 const {createToken, verifyToken, getLoginToken} = require('./token');
 const upload = require('./upload');
 const pug = require('pug');
@@ -28,13 +27,13 @@ module.exports = function makeRouter(app: Express) {
     const compiledFunctionEditItem = pug.compileFile("pug/edititem.pug");
     const compiledFunctionNotifications = pug.compileFile("pug/notifications.pug");
     
-    app.get('/', verifyToken, (req: Request, res: Response) => {
+    app.get('/', verifyToken, async (req: Request, res: Response) => {
         let { name, min, max } = req.query;
         let login = req.login;
     
-        let user = getUser(login!);
+        let user = await getUser(login!);
     
-        let filteredItems = itemList;
+        let filteredItems = await getItems();
     
         if (name) {
             filteredItems = filteredItems.filter((item: Item) => 
@@ -62,10 +61,10 @@ module.exports = function makeRouter(app: Express) {
         }));
     });
     
-    app.get('/profile', verifyToken, (req: Request, res: Response) => {
+    app.get('/profile', verifyToken, async (req: Request, res: Response) => {
         let login = req.login;
     
-        let user = getUser(login!);
+        let user = await getUser(login!);
     
         res.send(compiledFunctionProfil({
             title: "Profile | DAMarket",
@@ -73,14 +72,13 @@ module.exports = function makeRouter(app: Express) {
         }));
     });
     
-    app.post('/editProfile', verifyToken, upload.single("file"), (req: Request, res: Response) => {
+    app.post('/editProfile', verifyToken, upload.single("file"), async (req: Request, res: Response) => {
         const { name, password } = req.body;
         const login = req.login;
     
-        let user = getUser(login!);
+        let user = await getUser(login!);
         if (user == null) {return}
             
-        if (login == user.login) {
             user.name = name;
             user.password = password;
     
@@ -88,47 +86,35 @@ module.exports = function makeRouter(app: Express) {
                 let photo = "uploads/" + req.file.filename;
                 user.photo = photo;
             }
-    
-            let json = JSON.stringify(usersList);
-            fs.writeFileSync("./usersList.json", json);
-    
+
+            await editUser(login, user)
             res.redirect('/profile');
-            return;
-        }
     });
     
-    app.get('/myAds', verifyToken, (req: Request, res: Response) => {
+    app.get('/myAds', verifyToken, async (req: Request, res: Response) => {
         let login = req.login;
-        let user = getUser(login!);
+        let user = await getUser(login!);
     
         res.send(compiledFunctionMyAds({
             title: "My ads | DAMarket",
-            itemList,
+            itemList: await getItems(),
             user,
             currencies: Currency
         }));
     });
     
-    app.get('/editItem', verifyToken, (req: Request, res: Response) => {
+    app.get('/editItem', verifyToken, async (req: Request, res: Response) => {
         let {id, error} = req.query;
         let login = req.login;
     
-        let user = getUser(login!);
+        let user = await getUser(login!);
     
         if (id == undefined) {
             res.redirect("/myAds");
             return;
         }
     
-        let item = null;
-    
-        for (let i = 0; i < itemList.length; i++) {
-            const item2 = itemList[i];
-            if (item2.id == id) {
-                item = item2;
-                break;
-            }
-        }
+        let item = await getItem(id);
     
         if (item == null) {
             res.redirect("/myAds");
@@ -150,22 +136,14 @@ module.exports = function makeRouter(app: Express) {
         }));
     });
     
-    app.post('/editItem', verifyToken, upload.single("file"), (req: Request, res: Response) => {
+    app.post('/editItem', verifyToken, upload.single("file"), async (req: Request, res: Response) => {
         const {id, title, descriptions, price, currency} = req.body;
         const login = req.login;
     
         console.log(id);
         
     
-        let item = null;
-    
-        for (let i = 0; i < itemList.length; i++) {
-            const item2 = itemList[i];
-            if (item2.id == id) {
-                item = item2;
-                break;
-            }
-        }
+        let item = await getItem(id);
     
         if (item == null) {
             res.redirect("/myAds");
@@ -195,13 +173,12 @@ module.exports = function makeRouter(app: Express) {
         if (req.file) {
             item.photo = "uploads/" + req.file.filename;
         }
-    
-        let json = JSON.stringify(itemList);
-        fs.writeFileSync("./items.json", json);
+
+        await editItem(id, item)
         res.redirect('/myAds');
     });
     
-    app.post('/deleteItem', verifyToken, (req: Request, res: Response) => {
+    app.post('/deleteItem', verifyToken, async (req: Request, res: Response) => {
         let {id} = req.query;
         const login = req.login;
     
@@ -209,15 +186,8 @@ module.exports = function makeRouter(app: Express) {
             res.redirect("/myAds");
             return;
         }
-    
-        let item = null;
-        for (let i = 0; i < itemList.length; i++) {
-            const item2 = itemList[i];
-            if (item2.id == id) {
-                item = item2;
-                break;
-            }
-        }
+
+        let item = await getItem(id);
     
         if (item == null) {
             res.redirect("/myAds");
@@ -228,10 +198,8 @@ module.exports = function makeRouter(app: Express) {
             res.redirect("/myAds");
             return;
         }
-    
-        itemList.splice(+id, 1);
-        let json = JSON.stringify(itemList);
-        fs.writeFileSync("./items.json", json);
+
+        await removeItem(id)
         res.redirect('/myAds');
     });
     
@@ -239,11 +207,11 @@ module.exports = function makeRouter(app: Express) {
         res.redirect("/");
     });
     
-    app.get('/addItem', verifyToken, (req: Request, res: Response) => {
+    app.get('/addItem', verifyToken, async (req: Request, res: Response) => {
         let {error} = req.query;
         let login = req.login;
     
-        let user = getUser(login!);
+        let user = await getUser(login!);
     
         res.send(compiledFunctionAddItem({
             error,
@@ -253,7 +221,7 @@ module.exports = function makeRouter(app: Express) {
         }));
     });
     
-    app.post('/addItem', verifyToken,  upload.single("file"), (req: Request, res: Response) => {
+    app.post('/addItem', verifyToken,  upload.single("file"), async (req: Request, res: Response) => {
         const {descriptions, price, currency, title} = req.body;
         const login = req.login
     
@@ -275,32 +243,22 @@ module.exports = function makeRouter(app: Express) {
         }
     
         let photo = "uploads/" + req.file.filename;
-        itemList.push({title, descriptions, price, currency, photo, authorLogin: login!, id});
-        let json = JSON.stringify(itemList);
-        fs.writeFileSync("./items.json", json);
+        await addItem({title, descriptions, price, currency, photo, authorLogin: login!, id})
         res.redirect('/');
     });
     
-    app.get('/item', verifyToken, (req: Request, res: Response) => {
+    app.get('/item', verifyToken, async (req: Request, res: Response) => {
         let {id} = req.query;
         let login = req.login;
     
-        let user = getUser(login!);
+        let user = await getUser(login!);
     
         if (id == undefined) {
             res.redirect("/");
             return;
         }
     
-        let item = null;
-    
-        for (let i = 0; i < itemList.length; i++) {
-            const item2 = itemList[i];
-            if (item2.id == id) {
-                item = item2;
-                break;
-            }
-        }
+        let item = await getItem(id);
     
         res.send(compiledFunctionItem({
             title: "Item | DAMarket",
@@ -310,7 +268,7 @@ module.exports = function makeRouter(app: Express) {
         }));
     });
 
-    app.post('/orderitem', verifyToken, (req: Request, res: Response) => {
+    app.post('/orderitem', verifyToken, async (req: Request, res: Response) => {
         let { id } = req.query;
         let buyerLogin = req.login;
         
@@ -319,17 +277,10 @@ module.exports = function makeRouter(app: Express) {
         //     return;
         // }
     
-        let item = null;
-        for (let i = 0; i < itemList.length; i++) {
-            const item2 = itemList[i];
-            if (item2.id == id) {
-                item = item2;
-                break;
-            }
-        }
+        let item = await getItem(id);
     
-        let buyer = getUser(buyerLogin!);
-        let seller = getUser(item.authorLogin);
+        let buyer = await getUser(buyerLogin!);
+        let seller = await getUser(item.authorLogin);
 
 
     
@@ -340,19 +291,16 @@ module.exports = function makeRouter(app: Express) {
     
         const sellerNotification: Notification = {text: `User ${buyerLogin} wants to buy your item "${item.title}" for ${item.price} ${item.currency}. Contact them to complete the transaction.`, time: new Date(), see: false};
         const buyerNotification: Notification = {text: `You've ordered "${item.title}" for ${item.price} ${item.currency} from ${item.authorLogin}. Wait for the seller to contact you.`, time: new Date(), see: false};
-    
-        seller.notifications.push(sellerNotification);
-        buyer.notifications.push(buyerNotification);
-    
-        let json = JSON.stringify(usersList);
-        fs.writeFileSync("./usersList.json", json);
+
+        await addNotificationToUser(seller.login, sellerNotification)
+        await addNotificationToUser(buyer.login, buyerNotification)
     
         res.redirect("/notifications");
     });
 
-    app.get('/notifications', verifyToken, (req: Request, res: Response) => {
+    app.get('/notifications', verifyToken, async (req: Request, res: Response) => {
         let login = req.login;    
-        let user = getUser(login!);
+        let user = await getUser(login!);
 
         res.send(compiledFunctionNotifications({
             title: "Notifications | DAMarket",
@@ -370,77 +318,62 @@ module.exports = function makeRouter(app: Express) {
             notification.see = true;
         }
 
-        if (update === true) {
-            let json = JSON.stringify(usersList);
-            fs.writeFileSync("./usersList.json", json);
-        }
+        if (update === true) {await seeNotificationsForUser(login)}
     });
 
-    app.get('/requestinfo', verifyToken, (req: Request, res: Response) => {
+    app.get('/requestinfo', verifyToken, async (req: Request, res: Response) => {
         let {id} = req.query;
         let login = req.login;
-        let user = getUser(login!);
+        let user = await getUser(login!);
 
         if (id == undefined) {
             res.redirect("/");
             return;
         }
 
-        let item = null;
-        for (let i = 0; i < itemList.length; i++) {
-            const item2 = itemList[i];
-            if (item2.id == id) {
-                item = item2;
-                break;
-            }
-        }
+        let item = await getItem(id);
 
         let authorLogin = item.authorLogin;
-        let author = getUser(authorLogin);
+        let author = await getUser(authorLogin);
 
         const notification: Notification = {text: `User <span>${login}</span> requested your data. Click <a href='/sendinfo?sendLogin=${login}'> here</a> to send them`, time: new Date(), see: false};
         author.notifications.push(notification);
 
-        let json = JSON.stringify(usersList);
-        fs.writeFileSync("./usersList.json", json);
+        await addNotificationToUser(authorLogin, notification);
 
         res.redirect("/");
     });
 
-    app.get('/sendinfo', verifyToken, (req: Request, res: Response) => { 
+    app.get('/sendinfo', verifyToken, async (req: Request, res: Response) => { 
         let login = req.login;
-        let user = getUser(login!);
+        let user = await getUser(login!);
         let {sendLogin} = req.query;
-        let sendUser = getUser(sendLogin!);
+        let sendUser = await getUser(sendLogin!);
 
         const notification: Notification = {text: `You have received the data you requested: ${login}, ${user.name}`, time: new Date(), see: false};
         sendUser.notifications.push(notification);
 
-        let json = JSON.stringify(usersList);
-        fs.writeFileSync("./usersList.json", json);
-
+        await addNotificationToUser(sendUser.login, notification);
         res.redirect("/");
     });
 
-    app.get('/clearn', verifyToken, (req: Request, res: Response) => { 
+    app.get('/clearn', verifyToken, async (req: Request, res: Response) => { 
         let login = req.login;
-        let user = getUser(login!);
+        let user = await getUser(login!);
         
         if (user) {
             user.notifications = [];
-            
-            let json = JSON.stringify(usersList);
-            fs.writeFileSync("./usersList.json", json);
+            await clearNotifications(login)
         }
     
         res.redirect("/notifications");
     });
     
-    app.get('/register', getLoginToken, (req: Request, res: Response) => {
+    app.get('/register', getLoginToken, async (req: Request, res: Response) => {
         let {error} = req.query;
         let login = req.login;
     
-        let user = getUser(login!);
+        let user = await getUser(login!);
     
         res.send(compiledFunctionRegister({
             error,
@@ -449,11 +382,11 @@ module.exports = function makeRouter(app: Express) {
         }));
     });
     
-    app.get('/login', getLoginToken, (req: Request, res: Response) => {
+    app.get('/login', getLoginToken, async (req: Request, res: Response) => {
         let {error} = req.query;
         let login = req.login;
     
-        let user = getUser(login!);
+        let user = await getUser(login!);
     
         res.send(compiledFunctionLogin({
             error,
@@ -467,11 +400,11 @@ module.exports = function makeRouter(app: Express) {
         res.redirect('/login');
     });
     
-    app.post('/register', (req: Request, res: Response) => {
+    app.post('/register', async (req: Request, res: Response) => {
         const { name, login, password } = req.body;
-        let user = getUser(login!);
+        let user = await getUser(login!);
         let {sendLogin} = req.query;
-        let sendUser = getUser(sendLogin!);
+        let sendUser = await getUser(sendLogin!);
     
         if (name.length < 3 || name.length > 25) {
             res.redirect('/register?error=Name must be between 3 and 25 characters');
@@ -488,13 +421,12 @@ module.exports = function makeRouter(app: Express) {
             res.redirect('/register?error=Password must contain at least one uppercase letter, one lowercase letter, and one digit')
             return;
         }
-    
-        for (let i = 0; i < usersList.length; i++) {
-            const user = usersList[i];
-            if (user.login === login) {
-                res.redirect('/register?error=This login already exists');
-                return;
-            }
+
+        let user2 = await getUser(login);
+
+        if (user2 !== null) {
+            res.redirect('/register?error=This login already exists');
+            return;
         }
     
         if (login.length < 3 || login.length > 25) {
@@ -505,32 +437,19 @@ module.exports = function makeRouter(app: Express) {
         const token = createToken(login);
 
         const welcomeNotification: Notification = {text: "Welcome to DAMarket! Sell your products and reach buyers easily. Start now!", time: new Date(), see: false};
-    
-        usersList.push({ name, login, password, photo: null, notifications: [welcomeNotification] });
-        let json = JSON.stringify(usersList);
-        fs.writeFileSync("./usersList.json", json);
+
+        await addUser({ name, login, password, photo: null, notifications: [welcomeNotification] });
 
         res.cookie( "token", token, {path: "/", expires: new Date(10000000000000), sameSite: 'lax',  httpOnly: true, secure: true}) // додати при відправки на GitHub
         res.redirect('/');
     });
     
-    app.post('/login', (req: Request, res: Response) => {
+    app.post('/login', async (req: Request, res: Response) => {
         const {login, password} = req.body;
-    
-        let userFound = false;
-        for (let i = 0; i < usersList.length; i++) {
-            const user = usersList[i];
-            if (user.login === login) {
-                userFound = true;
-    
-                if (user.password !== password) {
-                    res.redirect('/login?error=Your login or password is incorrect');
-                    return;
-                }
-            }
-        }
-    
-        if (userFound == false) {
+
+        let user = await getUser(login);
+
+        if (!(await cheksPassword(user, password))) {
             res.redirect('/login?error=Your login or password is incorrect');
             return;
         }
