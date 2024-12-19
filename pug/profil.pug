@@ -11,11 +11,6 @@ html(lang="en")
         img.iconProfile#profileImage(src=(user.photo == null)? "../userPhoto.png": user.photo, alt=`${user.login}'s profile picture`)
         h1.userLogin#userLogin #{user.login}
         h2.userName#userName #{user.name}
-        .password-container#password-container
-          p.userPassword#userPassword Password:
-            span#passwordText •••••••
-            span#password #{user.password}
-          i#togglePassword.fas.fa-eye-slash
 
         button.editBtn#editButton(onclick='EditButton()') Edit Profile
 

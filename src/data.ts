@@ -41,6 +41,16 @@ async function connectClient() {
       .on('error', (err: any) => console.log('Redis Client Error', err))
       .connect();
 
+      let users = await client.get("users");
+      if (users == null) {
+        await client.set("users", "[]");
+      }
+
+      let items = await client.get("items");
+      if (items == null) {
+        await client.set("items", "[]");
+      }
+
     // await client.set("users", "[]");
     // await client.set("items", "[]");
     
