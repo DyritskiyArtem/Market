@@ -1,7 +1,7 @@
 import {Express} from "express";
 import {Item, User, Notification} from "./data";
 import{Request, Response} from "express";
-const {Currency, getUser, getItem, getUsers, getItems, addUser, cheksPassword, editUser, addItem, removeItem, editItem, addNotificationToUser, clearNotifications, seeNotificationsForUser} = require('./data');
+const {Currency, getUser, getItem, getUsers, getItems, addUser, cheksPassword, editUser, addItem, removeItem, editItem, addSubscriptionToUser, addNotificationToUser, clearNotifications, seeNotificationsForUser} = require('./data');
 const {createToken, verifyToken, getLoginToken} = require('./token');
 const upload = require('./upload');
 const pug = require('pug');
@@ -299,7 +299,7 @@ module.exports = function makeRouter(app: Express) {
     });
 
     app.get('/notifications', verifyToken, async (req: Request, res: Response) => {
-        let login = req.login;    
+        let login = req.login; 
         let user = await getUser(login!);
 
         res.send(compiledFunctionNotifications({
@@ -319,6 +319,14 @@ module.exports = function makeRouter(app: Express) {
         }
 
         if (update === true) {await seeNotificationsForUser(login)}
+    });
+
+    app.post('/subscribe', verifyToken, async (req: Request, res: Response) => {
+        let login = req.login;
+        const subscription = req.body;
+
+        await addSubscriptionToUser(login, subscription)
+        res.json({messege: "ok"});
     });
 
     app.get('/requestinfo', verifyToken, async (req: Request, res: Response) => {

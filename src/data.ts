@@ -1,3 +1,5 @@
+const webPush = require('web-push');
+
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -16,6 +18,7 @@ export interface User {
     login: string,
     password: string,
     photo: string | null,
+    subscription: any,
     notifications: Notification[],
 }
 
@@ -123,16 +126,45 @@ async function editItem(id: string, newItem: Item) {
     await client.set('items', JSON.stringify(updatedItems));
 }
 
+const publicKeyWebPush = process.env.PUBLIC_KEY; 
+const privateKeyWebPush = process.env.PRIVATE_KEY;
 
-async function addNotificationToUser(login: string, notification: Notification) {
+webPush.setVapidDetails(
+    'mailto:dyritskiyartem2012@gmail.com',
+    publicKeyWebPush,
+    privateKeyWebPush
+);
+
+async function addSubscriptionToUser(login: string, subscription: any) {
     const users = JSON.parse(await client.get('users'));
     const updatedUsers = users.map((user: User) => {
         if (user.login === login) {
-            user.notifications.push(notification);
+            user.subscription = subscription;
         }
         return user;
     });
     await client.set('users', JSON.stringify(updatedUsers));
+}
+
+async function addNotificationToUser(login: string, notification: Notification) {
+    const users = JSON.parse(await client.get('users'));
+    let subscription = null;
+    const updatedUsers = users.map((user: User) => {
+        if (user.login === login) {
+            user.notifications.push(notification);
+            subscription = user.subscription;
+        }
+        return user;
+    });
+    await client.set('users', JSON.stringify(updatedUsers));
+
+    if (subscription == undefined || subscription == null) { return; }
+    const notificationPayload = JSON.stringify({
+        title: login,
+        body: notification.text,
+    });
+
+    await webPush.sendNotification(subscription, notificationPayload)
 }
 
 async function clearNotifications(login: string) {
@@ -188,4 +220,4 @@ async function getItem(id: string) {
     return item;
 }
 
-module.exports = {Currency, getUser, getItem, getItems, getUsers, addUser, editUser, cheksPassword, addItem, removeItem, editItem, addNotificationToUser, clearNotifications, seeNotificationsForUser};
+module.exports = {Currency, getUser, getItem, getItems, getUsers, addUser, editUser, cheksPassword, addItem, removeItem, editItem, addSubscriptionToUser, addNotificationToUser, clearNotifications, seeNotificationsForUser};
