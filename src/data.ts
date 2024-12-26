@@ -163,8 +163,8 @@ async function addNotificationToUser(login: string, notification: Notification) 
         title: login,
         body: notification.text,
     });
-
-    await webPush.sendNotification(subscription, notificationPayload)
+    
+    await webPush.sendNotification(subscription, notificationPayload);
 }
 
 async function clearNotifications(login: string) {

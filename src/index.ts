@@ -11,6 +11,7 @@ const port = 1000;
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(express.json());
 
 makeRouter(app);
 
