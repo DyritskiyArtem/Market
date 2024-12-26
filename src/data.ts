@@ -159,9 +159,10 @@ async function addNotificationToUser(login: string, notification: Notification) 
     await client.set('users', JSON.stringify(updatedUsers));
 
     if (subscription == undefined || subscription == null) { return; }
+    const stripHTMLTags = (str: string) => str.replace(/<[^>]*>/g, '');
     const notificationPayload = JSON.stringify({
         title: login,
-        body: notification.text,
+        body: stripHTMLTags(notification.text),
     });
     
     await webPush.sendNotification(subscription, notificationPayload);
